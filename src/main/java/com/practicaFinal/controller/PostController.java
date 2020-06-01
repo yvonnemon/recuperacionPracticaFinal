@@ -6,10 +6,7 @@ import com.practicaFinal.manager.UserManager;
 import com.practicaFinal.model.Post;
 import com.practicaFinal.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -50,6 +47,39 @@ public class PostController {
         post.setUser(userManager.findById(1));
 
         postManager.addOrUpdatePost(post);
+        System.out.println("added");
         return "added";
+    }
+
+    @DeleteMapping("/delete")
+    public String deletePost(){
+        Post post = postManager.getPostById(4);
+
+        postManager.delete(post);
+        System.out.println("deleted");
+        return "deleted";
+
+    }
+
+    @PutMapping("/update")
+    public String updatePost(){
+        Post post = new Post();
+        post.setId(1);
+        post.setContent("holo");
+        post.setTranslatedContent("holiowiws");
+
+        post.setLanguage("norcoreanoxd");
+        post.setOriginalLanguage("surcoreanoxd");
+
+        post.setTitle("titulinsito");
+        post.setTranslatedTitle("titulinsote");
+
+        post.setDatePost(new Date());
+        post.setUser(userManager.findById(1));
+
+        postManager.addOrUpdatePost(post);
+        System.out.println("updated");
+        return "updated";
+
     }
 }

@@ -23,5 +23,7 @@ public class PostManager {
     public void delete(Post post){
         postRepository.delete(post);
     }
-
+    public Post getPostById(Integer id){
+        return postRepository.findById(id).orElse(null);
+    }
 }
