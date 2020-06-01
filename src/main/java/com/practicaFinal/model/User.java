@@ -15,9 +15,11 @@ public class User {
     private Integer id;
 
     @Column(name = "email", nullable = false, unique = true)
+    @JsonIgnore
     private String email;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "name")
