@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -40,33 +41,38 @@ public class PostController {
     }
 
     @PostMapping("/insert")
-    public String insertPost(@RequestBody String body) throws ParseException {
-        JsonObject jsonObject = gson.fromJson(body, JsonObject.class);
-        System.out.println(jsonObject);
+    public String insertPost(@RequestBody Post body) throws ParseException {
+//        JsonObject jsonObject = gson.fromJson(body, JsonObject.class);
+//        System.out.println(jsonObject);
+        System.out.println(body.getDatePost());
+        Post post = body;
+
+
+
        // String x = jsonObject.get("holi").toString();
        // System.out.println(x+'8');
 
-        Post post = new Post();
-        post.setContent(jsonObject.get("content").toString().replaceAll("\"",""));
-        post.setTranslatedContent(jsonObject.get("translatedContent").toString().replaceAll("\"",""));
-
-        post.setLanguage(jsonObject.get("language").toString().replaceAll("\"",""));
-        post.setOriginalLanguage(jsonObject.get("originalLanguage").toString().replaceAll("\"",""));
-
-        post.setTitle(jsonObject.get("title").toString().replaceAll("\"",""));
-        post.setTranslatedTitle(jsonObject.get("translatedTitle").toString().replaceAll("\"",""));
-
-        String fechaString = jsonObject.get("date").toString();
-        fechaString = fechaString.replaceAll("\"","");
-        SimpleDateFormat fechita = new SimpleDateFormat("yyyy-MM-dd");
-        Date f = fechita.parse(fechaString);
-        System.out.println(f);
-
-        post.setDatePost(f);
+//        Post post = new Post();
+//        post.setContent(jsonObject.get("content").toString().replaceAll("\"",""));
+//        post.setTranslatedContent(jsonObject.get("translatedContent").toString().replaceAll("\"",""));
+//
+//        post.setLanguage(jsonObject.get("language").toString().replaceAll("\"",""));
+//        post.setOriginalLanguage(jsonObject.get("originalLanguage").toString().replaceAll("\"",""));
+//
+//        post.setTitle(jsonObject.get("title").toString().replaceAll("\"",""));
+//        post.setTranslatedTitle(jsonObject.get("translatedTitle").toString().replaceAll("\"",""));
+//
+//        String fechaString = jsonObject.get("date").toString();
+//        fechaString = fechaString.replaceAll("\"","");
+//        SimpleDateFormat fechita = new SimpleDateFormat("yyyy-MM-dd");
+//        Date f = fechita.parse(fechaString);
+//        System.out.println(f);
+//
+//        post.setDatePost(f);
         post.setUser(userManager.findById(1));
-
+//
         postManager.addOrUpdatePost(post);
-        System.out.println("added");
+//        System.out.println("added");
         return "added";
     }
 
@@ -93,7 +99,7 @@ public class PostController {
         post.setTitle("titulinsito");
         post.setTranslatedTitle("titulinsote");
 
-        post.setDatePost(new Date());
+        post.setDatePost(LocalDate.now());
         post.setUser(userManager.findById(1));
 
         postManager.addOrUpdatePost(post);

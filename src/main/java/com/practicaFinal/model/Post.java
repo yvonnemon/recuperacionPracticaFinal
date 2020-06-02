@@ -1,6 +1,7 @@
 package com.practicaFinal.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -30,7 +31,7 @@ public class Post {
     private String originalLanguage;
 
     @Column(name = "date")
-    private Date datePost;
+    private LocalDate datePost;
 
     @ManyToOne
     @JoinColumn(
@@ -98,11 +99,11 @@ public class Post {
         this.originalLanguage = originalLanguage;
     }
 
-    public Date getDatePost() {
+    public LocalDate getDatePost() {
         return datePost;
     }
 
-    public void setDatePost(Date datePost) {
+    public void setDatePost(LocalDate datePost) {
         this.datePost = datePost;
     }
 
