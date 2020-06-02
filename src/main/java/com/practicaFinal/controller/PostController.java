@@ -28,12 +28,6 @@ public class PostController {
     @Autowired
     private UserManager userManager;
 
-    @GetMapping("/hola") //este es el primer test
-    public String holi(){
-        return "holita"; //en el cliente es await .text(), si es un objeto es .json()
-    }
-
-
     @GetMapping("/posts")
     public List<Post> listaPosts(){
         List<Post> posts = postManager.findAll();
@@ -45,9 +39,6 @@ public class PostController {
 //        JsonObject jsonObject = gson.fromJson(body, JsonObject.class);
 //        System.out.println(jsonObject);
         System.out.println(body.getDatePost());
-        Post post = body;
-
-
 
        // String x = jsonObject.get("holi").toString();
        // System.out.println(x+'8');
@@ -69,16 +60,17 @@ public class PostController {
 //        System.out.println(f);
 //
 //        post.setDatePost(f);
-        post.setUser(userManager.findById(1));
+        body.setUser(userManager.findById(1));
 //
-        postManager.addOrUpdatePost(post);
+        postManager.addOrUpdatePost(body);
 //        System.out.println("added");
         return "added";
     }
 
     @DeleteMapping("/delete")
-    public String deletePost(){
-        Post post = postManager.getPostById(4);
+    public String deletePost(@RequestBody String id){
+        Integer postid = Integer.parseInt(id);
+        Post post = postManager.getPostById(postid);
 
         postManager.delete(post);
         System.out.println("deleted");
@@ -87,22 +79,22 @@ public class PostController {
     }
 
     @PutMapping("/update")
-    public String updatePost(){
-        Post post = new Post();
-        post.setId(1);
-        post.setContent("holo");
-        post.setTranslatedContent("holiowiws");
+    public String updatePost(@RequestBody Post body){
+//        Post post = body;
+//        post.setId(1);
+//        post.setContent("holo");
+//        post.setTranslatedContent("holiowiws");
+//
+//        post.setLanguage("norcoreanoxd");
+//        post.setOriginalLanguage("surcoreanoxd");
+//
+//        post.setTitle("titulinsito");
+//        post.setTranslatedTitle("titulinsote");
+//
+//        post.setDatePost(LocalDate.now());
+        body.setUser(userManager.findById(1));
 
-        post.setLanguage("norcoreanoxd");
-        post.setOriginalLanguage("surcoreanoxd");
-
-        post.setTitle("titulinsito");
-        post.setTranslatedTitle("titulinsote");
-
-        post.setDatePost(LocalDate.now());
-        post.setUser(userManager.findById(1));
-
-        postManager.addOrUpdatePost(post);
+        postManager.addOrUpdatePost(body);
         System.out.println("updated");
         return "updated";
 
