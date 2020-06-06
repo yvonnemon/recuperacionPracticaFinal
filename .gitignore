@@ -31,3 +31,6 @@ build/
 .vscode/
 
 /src/main/resources/application.properties
+
+quasar/node_modules
+overnight/node_modules
