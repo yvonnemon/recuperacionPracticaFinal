@@ -14,7 +14,7 @@ export class SampleServer extends Server {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({extended: true}));
 
-        const whitelist = ["http://localhost","http://localhost:8080"]
+        const whitelist = ["http://localhost","http://localhost:8080","http://localhost:8085","http://localhost:8086"]
         const options:cors.CorsOptions = {
             origin: whitelist,
             credentials: true,

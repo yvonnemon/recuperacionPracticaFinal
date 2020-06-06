@@ -33,7 +33,7 @@ var SampleServer = /** @class */ (function (_super) {
         var _this = _super.call(this, process.env.NODE_ENV === 'development') || this;
         _this.app.use(bodyParser.json());
         _this.app.use(bodyParser.urlencoded({ extended: true }));
-        var whitelist = ["http://localhost", "http://localhost:8080"];
+        var whitelist = ["http://localhost", "http://localhost:8080", "http://localhost:8085", "http://localhost:8086"];
         var options = {
             origin: whitelist,
             credentials: true,
