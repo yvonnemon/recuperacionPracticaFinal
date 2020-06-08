@@ -1,13 +1,16 @@
 <template>
-  <q-page class="flex flex-center">
+
+  <q-page class="column">
     <q-input v-model="originalTitle" label="titulo" />
     <br />
     <q-input v-model="originalContent" filled type="textarea" label="contenido" />
     <q-btn color="primary" label="send" @click="send" />
     
     <label for>idioma original</label>
-    <q-select filled v-model="idiomaOriginal" :options="idiomasName" option-label="idiomasName" />
+    <q-select filled v-model="idiomaOriginal" :options="idiomas" option-label="name" option-value="code"/>
     <p>{{idiomaOriginal}}</p>
+        <q-btn color="primary" label="asdasd" @click="asd" />
+
   </q-page>
 </template>
 
@@ -25,8 +28,6 @@ export default {
       translatedTitle: "no",
       translatedContent: "no",
       token: localStorage.getItem("token"),
-      idiomasName: [],
-      idiomasId: [],
       idiomaOriginal: "",
       idiomas: []
     };
@@ -35,6 +36,10 @@ export default {
     this.listaridiomas();
   },
   methods: {
+      asd(){
+          console.log(this.idiomaOriginal.code);
+          
+      },
     async send() {
       let today = new Date();
       let dd = String(today.getDate()).padStart(2, "0");
@@ -119,14 +124,7 @@ export default {
       let idiomaid = [];
 
       this.idiomas = listaidiomas;
-      for (let i = 0; i < listaidiomas.length; i++) {
-          idiomanombre.push(listaidiomas[i].name)
-          idiomaid.push(listaidiomas[i].id)
-      }
-
-      this.idiomasName = idiomanombre;
-      this.idiomasId = idiomaid;
-      //console.log(this.idiomas);
+      console.log(this.idiomas);
       
     }
   }
