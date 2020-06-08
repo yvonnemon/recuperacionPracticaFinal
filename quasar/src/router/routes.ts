@@ -6,7 +6,9 @@ const routes: RouteConfig[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue') },
-      { path: 'main', component: () => import('pages/Indice.vue') }
+      { path: 'main', component: () => import('pages/Indice.vue') },
+      { path: 'posts', component: () => import('pages/PostForm.vue') },
+      { path: 'calc', component: () => import('pages/Calculadora.vue') }
     ]
   }
 ];

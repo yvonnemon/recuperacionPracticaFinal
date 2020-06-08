@@ -16,9 +16,9 @@
       </q-toolbar>
 
       <q-tabs align="left">
-        <q-route-tab to="/page1" label="Page One" />
-        <q-route-tab to="/page2" label="Page Two" />
-        <q-route-tab to="/page3" label="Page Three" />
+        <q-route-tab to="/main" label="Lista posts" />
+        <q-route-tab to="/posts" label="Añadir post" />
+        <q-route-tab to="/calc" label="Calculadora" />
       </q-tabs>
     </q-header>
 
