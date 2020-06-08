@@ -1,14 +1,17 @@
 <template>
 
   <q-page class="column">
-    <q-input v-model="originalTitle" label="titulo" />
-    <br />
-    <q-input v-model="originalContent" filled type="textarea" label="contenido" />
-    <q-btn color="primary" label="send" @click="send" />
+    <q-input v-model="originalTitle" label="titulo" class="separacion"/>
+    <q-input v-model="originalContent" filled type="textarea" label="contenido" class="separacion" />
+    <q-btn color="primary" label="send" @click="send" class="separacion"/>
     
     <label for>idioma original</label>
-    <q-select filled v-model="idiomaOriginal" :options="idiomas" option-label="name" option-value="code"/>
-    <p>{{idiomaOriginal}}</p>
+    <q-select filled v-model="idiomaOriginal" :options="idiomas" option-label="name" option-value="code" class="separacion"/>
+    <label for>idioma a trducir</label>
+    <q-select filled v-model="idiomaTraducir" :options="idiomas" option-label="name" option-value="code" class="separacion"/>
+        <q-input value="asd" filled type="textarea" label="traducido" />
+
+    <p>{{idiomaOriginal}} || {{idiomaTraducir}}</p>
         <q-btn color="primary" label="asdasd" @click="asd" />
 
   </q-page>
@@ -28,6 +31,7 @@ export default {
       translatedTitle: "no",
       translatedContent: "no",
       token: localStorage.getItem("token"),
+      idiomaTraducir: "",
       idiomaOriginal: "",
       idiomas: []
     };
@@ -126,7 +130,15 @@ export default {
       this.idiomas = listaidiomas;
       console.log(this.idiomas);
       
+    },
+    async traducir(){
+
     }
   }
 };
 </script>
+<style >
+    .separacion {
+        margin-bottom: 10px;
+    }
+</style>
