@@ -38,6 +38,7 @@ public class PostController {
     public String insertPost(@RequestBody Post body) throws ParseException {
 //        JsonObject jsonObject = gson.fromJson(body, JsonObject.class);
 //        System.out.println(jsonObject);
+        System.out.println("entro al insert");
         System.out.println(body.getDatePost());
 
        // String x = jsonObject.get("holi").toString();

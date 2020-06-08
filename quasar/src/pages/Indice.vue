@@ -45,7 +45,7 @@ export default {
     let data = res.data.jwt;
     this.token = data;
     console.log(data);
-    
+    localStorage.setItem('token', this.token)
     this.listarPosts(this.token);
   },
   methods: {

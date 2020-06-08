@@ -23,6 +23,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         System.out.println("estas en el handler");
+
         String auth = request.getHeader("Authorization");
         System.out.println(auth);
         if(auth == null){
@@ -37,9 +38,6 @@ public class TokenInterceptor implements HandlerInterceptor {
         // Esto es un arreglo hasta que el profe te diga como hacerlo.
         TokenManager tokenManager = Utils.getBean(TokenManager.class);
 
-        if(tokenManager.validateToken(token)){
-            return true;
-        }
-        return true;
+        return tokenManager.validateToken(token);
     }
 }

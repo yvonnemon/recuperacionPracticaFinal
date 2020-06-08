@@ -12,7 +12,7 @@ public class TokenManager {
     private String SECRETO;
 
     public boolean validateToken(String token){
-        System.out.println("token recibido:"+token);
+        System.out.println("token recibido: "+token);
         Claims claims = Jwts.parser().setSigningKey(SECRETO.getBytes())
                 .parseClaimsJws(token) //esto es el payload
                 .getBody();
