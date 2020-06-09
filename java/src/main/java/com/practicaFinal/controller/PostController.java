@@ -70,10 +70,13 @@ public class PostController {
 
     @DeleteMapping("/delete")
     public String deletePost(@RequestBody String id){
-        Integer postid = Integer.parseInt(id);
-        Post post = postManager.getPostById(postid);
+        JsonObject jsonObject = gson.fromJson(id, JsonObject.class);
+
+        String x = jsonObject.get("id").toString();
+        Post post = postManager.getPostById(Integer.parseInt(x));
 
         postManager.delete(post);
+
         System.out.println("deleted");
         return "deleted";
 

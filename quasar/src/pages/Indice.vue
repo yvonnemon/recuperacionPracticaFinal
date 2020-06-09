@@ -1,18 +1,12 @@
 <template>
   <div class="q-pa-md" >
 
-    <q-list
-      dense
-      bordered
-      padding
-      class="rounded-borders"
-      v-for="post in posts"
-      :key="post['id']"
+    <q-list dense bordered padding class="rounded-borders" v-for="post in posts" :key="post['id']"
     >
       <q-item v-ripple>
-        <q-item-section>
-        <h6 style="word-break: break-word;">{{ post["title"] }}</h6>
-          <p style="word-break: break-word;">{{ post["translatedContent"] }}</p>
+        <q-item-section v-model="elpost" @click="borrar(post['id'])"> 
+        <h6 post.key style="word-break: break-word;">{{ post["title"] }}</h6>
+          <p  style="word-break: break-word;">{{ post["translatedContent"] }}</p>
         </q-item-section>
       </q-item>
     </q-list>
@@ -27,7 +21,8 @@ export default {
       posts: [],
       user: "pepe",
       apellido: "popo",
-      token: ""
+      token: "",
+      elpost: ""
     };
   },
   async created() {
@@ -49,12 +44,34 @@ export default {
     this.listarPosts(this.token);
   },
   methods: {
+    borrar: async function(idpost){
+        console.log(idpost);
+        let token = localStorage.getItem('token')
+        let seguro = confirm("seguro de borrar el post?");
+        const data = {
+            id:idpost
+        }
+
+        if(seguro){
+           // let borrado = await axios.delete('http://localhost:8080/delete',{headers: { Authorization: "Bearer " + token,"Content-Type": "application/json"}},data)}
+            let borrado = await axios.delete('http://localhost:8080/delete',{
+              headers: {
+                Authorization: "Bearer " + token,
+              "Content-Type": "application/json"
+              },
+		          data: {
+                id: idpost
+              }
+            })
+            location.reload(true);
+        } 
+
+    },
     listarPosts: async function(token) {
-      console.log("caca");
       let listarPosts = await axios.get("http://localhost:8080/posts", {
         method: "GET",
         headers: new Headers({
-          Authorization: "Bearer " + token,
+          Authorization: "Bearer " + this.token,
           "Content-Type": "application/x-www-form-urencoded"
         })
       });
