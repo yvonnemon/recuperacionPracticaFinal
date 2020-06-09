@@ -8,7 +8,7 @@
     <q-select filled v-model="idiomaOriginal" :options="idiomas" option-label="name" option-value="code" class="separacion"/>
     <label for>idioma a traducir</label>
     <q-select filled v-model="idiomaTraducir" :options="idiomas" option-label="name" option-value="code" class="separacion"/>
-    <q-input v-model="translatedContent" filled type="textarea" label="texto traducido" class="separacion" />
+    <q-input v-model="translatedContent" readonly filled type="textarea" label="texto traducido" class="separacion" />
 
     <q-btn color="primary" label="traducir" @click="traducir" class="separacion"/>
     <q-btn color="primary" label="send" @click="send" class="separacion"/>

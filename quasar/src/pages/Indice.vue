@@ -27,20 +27,11 @@ export default {
   },
   async created() {
     console.log("token");
-    /*const peticionToken = await fetch(
-      "http://localhost:3000/api/users/token/" +
-        this.user +
-        "/" +
-        this.apellido
-    );
-    const token = await peticionToken.json();
-    this.token = token.jwt;
-    console.log(this.token);*/
     let res = await axios.get('http://localhost:3000/api/users/token/' +this.user +"/" + this.apellido);
     let data = res.data.jwt;
     this.token = data;
-    console.log(data);
-    localStorage.setItem('token', this.token)
+
+localStorage.setItem('token', this.token)
     this.listarPosts(this.token);
   },
   methods: {
@@ -53,7 +44,6 @@ export default {
         }
 
         if(seguro){
-           // let borrado = await axios.delete('http://localhost:8080/delete',{headers: { Authorization: "Bearer " + token,"Content-Type": "application/json"}},data)}
             let borrado = await axios.delete('http://localhost:8080/delete',{
               headers: {
                 Authorization: "Bearer " + token,
@@ -77,7 +67,6 @@ export default {
       });
       let posts = listarPosts.data;
       this.posts = posts;
-      console.log(this.posts);
     }
   }
 };
