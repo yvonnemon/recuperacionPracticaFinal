@@ -8,7 +8,7 @@ import java.util.Date;
 @Table(name = "post")
 public class Post {
     @Id
-    @Column(name = "idpost", nullable = false, unique = true)
+    @Column(name = "idpost", nullable = false, unique = true, columnDefinition = "BINARY(16)")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 

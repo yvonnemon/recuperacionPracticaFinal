@@ -16,8 +16,8 @@
       </q-toolbar>
 
       <q-tabs align="left">
-        <q-route-tab to="/main" label="Lista posts" />
-        <q-route-tab to="/posts" label="Añadir post" />
+        <q-route-tab to="/posts" label="Lista posts" />
+        <q-route-tab to="/form" label="Añadir post" />
         <q-route-tab to="/calc" label="Calculadora" />
       </q-tabs>
     </q-header>
@@ -42,7 +42,8 @@ export default {
   data () {
     return {
       left: false,
-      right: false
+      right: false,
+      postupdate: ""
     }
   }
 }

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class PostController {
     @GetMapping("/posts")
     public List<Post> listaPosts(){
         List<Post> posts = postManager.findAll();
+        Collections.reverse(posts);
         return posts;
     }
 
@@ -63,7 +66,7 @@ public class PostController {
 //        post.setDatePost(f);
         body.setUser(userManager.findById(1));
 //
-        postManager.addOrUpdatePost(body);
+        postManager.save(body);
 //        System.out.println("added");
         return "added";
     }
@@ -98,7 +101,7 @@ public class PostController {
 //        post.setDatePost(LocalDate.now());
         body.setUser(userManager.findById(1));
 
-        postManager.addOrUpdatePost(body);
+        postManager.uppdatePost(body);
         System.out.println("updated");
         return "updated";
 

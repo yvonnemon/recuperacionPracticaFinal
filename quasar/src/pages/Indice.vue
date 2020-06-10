@@ -1,15 +1,19 @@
 <template>
   <div class="q-pa-md" >
-
     <q-list dense bordered padding class="rounded-borders" v-for="post in posts" :key="post['id']"
     >
       <q-item v-ripple>
-        <q-item-section v-model="elpost" @click="borrar(post['id'])"> 
+        <q-item-section v-model="elpost" >
         <h6 post.key style="word-break: break-word;">{{ post["title"] }}</h6>
           <p  style="word-break: break-word;">{{ post["translatedContent"] }}</p>
+          <div>
+            <q-btn color="black" @click="borrar(post['id'])" label="Delete" /> 
+            <q-btn color="secondary" @click="update(post)" label="Update" />
+        </div>
         </q-item-section>
       </q-item>
     </q-list>
+
   </div>
 </template>
 
@@ -31,13 +35,20 @@ export default {
     let data = res.data.jwt;
     this.token = data;
 
-localStorage.setItem('token', this.token)
+    sessionStorage.setItem('token', this.token)
+    sessionStorage.removeItem('postUpdate')
+
     this.listarPosts(this.token);
   },
   methods: {
+    update: function(post){
+      sessionStorage.setItem('postUpdate', JSON.stringify(post))
+      this.$router.push("/form") 
+      console.log(post);
+    },
     borrar: async function(idpost){
         console.log(idpost);
-        let token = localStorage.getItem('token')
+        let token = sessionStorage.getItem('token')
         let seguro = confirm("seguro de borrar el post?");
         const data = {
             id:idpost
