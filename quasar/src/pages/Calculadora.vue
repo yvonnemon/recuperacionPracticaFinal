@@ -13,9 +13,9 @@
       <q-input readonly outlined v-model="showedfood" type="number" label="Alimentos enseñados" />
       <p>{{label}} || {{confidence}}</p>
       <div>{{video}}</div>
-      <q-btn color="primary" label="Get Picture" @click="captureImage" />
+            <q-btn color="purple" label="Grabar" @click="preload"/>
 
-    <img :src="imageSrc">
+      <video id="camara" width="100%" height="200" autoplay></video>
     </div>
   </div>
 </template>
@@ -39,10 +39,24 @@ export default {
       video: "",
       nombre: "",
       nombreKCal: "",
-      imageSrc: ''
+      stream: null,
+      classifier: ""
+
     };
   },
   async created() {
+    let nombre;
+    let calorias;
+    //para que funcione hay que actualizar la version, si no petara al primer item detectado
+    let version = 1;
+    const request = indexedDB.open("comidas", version);
+    let db;
+    request.onupgradeneeded = function (event) {
+        db = event.target.result;
+        let os = db.createObjectStore('comidas', {
+            autoIncrement: true
+        });
+    }
 
   },
   methods: {
@@ -83,38 +97,80 @@ export default {
             this.calorias = tmb * ejerc;
         }
       },
-      preload: function(){
-            console.log(window.location.href);
-
-    this.video = createCapture(VIDEO, {
-        video: {
-            width: 280,
-            height: 280,
-            aspectRatio: 1
+    preload: async function() {
+      const video = document.querySelector('#camara');
+      this.stream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
+      video.srcObject = this.stream;
+      this.video = video;
+      this.STOP_LOOP = false;
+      console.log("aqui")
+      let clasifier = ml5.imageClassifier('MobileNet', video);
+      console.log("aquidos")
+      this.classifier = clasifier;
+      let x = 0;
+        while(x < 100){
+          console.log("aquitres")
+          this.peticion(clasifier);
+          x++;
         }
-    });
-    classifier = ml5.imageClassifier('DoodleNet', this.video);
 
-      },
-      setup: function(){
-            this.classifyVideo();
+      
+    },//no hay forma de que funcione el classifier.classify
+    peticion: async function(clasifier){
+      let clas = ml5.imageClassifier('MobileNet', this.video);
+        console.log("cuatro")
+        //let clas = this.classifier;
+        clas.classify().then(results => { 
+        this.label = results[0].label;
+        this.confidence = results[0].confidence.toFixed(2);
+        });
 
-      },
-      classifyVideo: function(){
-            classifier.classify(gotResult);
-      },
-      gotResult: async function(error, results){
-    if (error) {
+      if(this.confidence >= 0.2){
+            let app_id = "3cd7f551";
+            let app_key = "b7505d564aa4b8aee146898fc94e1deb";
+
+            let peticion = await fetch("https://api.edamam.com/api/food-database/parser?ingr=" + this.label +
+                "&app_id=" + app_id + "&app_key=" + app_key, {
+                    method: "GET"
+                });
+            let peticionJson = await peticion.json();
+            let parseado = peticionJson.parsed;
+
+            if (parseado.length < 1) {
+                console.log("no es comida o no existe");
+                calorias = 0;
+            } else {
+                let nutrientes = parseado[0].food.nutrients;
+                calorias = nutrientes.ENERC_KCAL;
+
+            }
+
+            let tx = db.transaction(["comidas"], "readwrite");
+            let store = tx.objectStore("comidas");
+
+            store.put({
+                name: this.label,
+                kcal: 8
+            });
+            tx.oncomplete = function () {
+                console.log("insertado");
+                caloriasConsumidas = caloriasConsumidas + calorias;
+                document.querySelector("#totalkcal").innerHTML = caloriasConsumidas;
+
+            }
+
+        }
+    },
+    gotResult: async function(error, results) {
+      if (error) {
         console.error(error);
-    }
-    // The results are in an array ordered by confidence.
+      } 
+      let fiabilidad = nf(results[0].confidence, 0, 2);
 
-    let fiabilidad = nf(results[0].confidence, 0, 2);
+      if (fiabilidad > 0.5) {
+        nombre = results[0].label;
 
-    if (fiabilidad > 0.5) {
-        this.nombre = results[0].label;
-
-        const repetido = await estaRepetido(this.nombre);
+        const repetido = await estaRepetido(nombre);
 
         if (!repetido) {
             console.log("inserto");
@@ -141,7 +197,7 @@ export default {
             let store = tx.objectStore("comidas");
 
             store.put({
-                name: this.nombre,
+                name: nombre,
                 kcal: 8
             });
             tx.oncomplete = function () {
@@ -153,15 +209,73 @@ export default {
         }
 
     }
-    this.label ='Label: ' + results[0].label;
-    this.confidence = 'Confidence: ' + nf(results[0].confidence, 0, 2); // Round the confidence to 0.01
-    // Call classifyVideo again
-      this.classifyVideo();
 
-      }
+
+    }
+        /* grabar: async function(){
+            const video = document.querySelector('#camara');
+            this.stream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
+              video.srcObject = this.stream;
+              this.STOP_LOOP = false;
+              let clasifier = await ml5.imageClassifier('MobileNet', video);
+              this.loop(clasifier);
+
+              // Parar y mandar a peticion API
+              const bar = this.$refs.bar;
+              bar.start();
+              this.STOP_LOOP = true;
+              this.stream.getTracks().forEach(function (track) {
+                track.stop();
+              });
+              const alimentos = this.getAll();
+              alimentos.onsuccess = async function (ev) {
+                const allfood = ev.target.result;
+                const promesas = [];
+                allfood.forEach(individualFood => {
+                  if (!individualFood.kcal) {
+                    const promesa = this.peticionComida(individualFood.nombre);
+                    promesas.push(promesa)
+                  }
+                });
+                const result = await Promise.all(promesas);
+                result.forEach(food => {
+                  if (food.isFood !== false) {
+                    this.updateFood(food);
+                  } else {
+                    this.removeFood(food);
+                  }
+                });
+                const allTheFood = this.getAll();
+                allTheFood.onsuccess = function (ev) {
+                  this.allFoodItems.length = 0;
+                  ev.target.result.forEach(item => {
+                    this.allFoodItems.push(item)
+                  });
+                  this.$refs.bar.stop();
+                }.bind(this)
+              }.bind(this)
+            },
+            peticionComida: async function(nombre){
+            const APP_ID = "3cd7f551";
+            const API_KEY = "b7505d564aa4b8aee146898fc94e1deb";
+              const result = await fetch("https://api.edamam.com/api/food-database/parser?app_id=" + APP_ID + "&app_key=" + API_KEY + "&ingr=" + nombre).then(x => x.json());
+              if (result.parsed.length > 0) {
+              const kcal = result.parsed[0].food.nutrients.ENERC_KCAL;
+            return {
+                nombre: foodName,
+                kcal: kcal,
+                isFood: true
+              }
+            } else {
+              return {
+                nombre: foodName,
+                isFood: false
+              };
+            }
+            }*/
+
   }
 };
-
 
 </script>
 <style >
