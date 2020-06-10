@@ -143,20 +143,16 @@ export default {
       }
     },
     async listaridiomas() {
-      console.log("traducir");
-      let idiomas = await fetch(
-        "http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php",
-        {
-          method: "POST",
-          body: JSON.stringify({
+      const data = {
             MethodName: "languages",
             params: ""
-          })
-        }
+      }
+      console.log("traducir");
+      let idiomas = await axios.post(
+        "http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php", data
+        
       );
-      let listaidiomas = await idiomas.json();
-      let idiomanombre = [];
-      let idiomaid = [];
+      let listaidiomas = await idiomas.data;
 
       this.idiomas = listaidiomas;
       //console.log(this.idiomas);

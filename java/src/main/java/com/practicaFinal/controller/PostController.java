@@ -1,22 +1,16 @@
 package com.practicaFinal.controller;
 
 
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.practicaFinal.manager.PostManager;
 import com.practicaFinal.manager.UserManager;
 import com.practicaFinal.model.Post;
-import com.practicaFinal.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @RestController
