@@ -10,10 +10,10 @@
       <q-btn color="purple" label="Calcular" @click="calcular"/>
       <q-input v-model="calorias" filled type="number" readonly hint="Tus calorias diarias son:"/>
 
-      <q-input readonly outlined v-model="showedfood" type="number" label="Alimentos enseñados" />
-      <p>{{label}} || {{confidence}}</p>
       <div>{{video}}</div>
-            <q-btn color="purple" label="Grabar" @click="preload"/>
+          <q-input v-model="comida" label="inserte el alimento comsumido para contar las calorias" class="separacion" />
+
+            <q-btn color="purple" label="Añadir alimento" @click="insertar"/>
 
       <video id="camara" width="100%" height="200" autoplay></video>
     </div>
@@ -21,9 +21,9 @@
 </template>
 
 <script>
-
 const axios = require('axios');
 export default {
+  
   data() {
     return {
       sexo: "",
@@ -33,31 +33,47 @@ export default {
       calorias: "",
       options: ["Poco ejercicio","Ejercicio Ligero","Ejercicio Moderado","Ejercicio Fuerte","Ejercicio profesional"],
       ejercicio: "",
-      showedfood: "",
       label: "",
       confidence: "",
       video: "",
       nombre: "",
       nombreKCal: "",
       stream: null,
-      classifier: ""
-
+      classifier: "",
+      comida: "",
+      databaseName: "comidas",
+      databaseTable: "comidas",
+      db: null
     };
   },
   async created() {
-    let nombre;
+    this.db = indexedDB.open(this.databaseName, 1);
+
+    this.db.onupgradeneeded = async function (upgradeDB) {
+        const database = upgradeDB.target.result;
+        const tabla = database.createObjectStore(this.databaseName, {keyPath: "name"});
+        
+        
+      }.bind(this);
+
+      this.db.onsuccess = function (ev) {
+        
+          ev.target.result;
+        
+      }.bind(this);
+
+/*  let nombre;
     let calorias;
     //para que funcione hay que actualizar la version, si no petara al primer item detectado
     let version = 1;
     const request = indexedDB.open("comidas", version);
-    let db;
+    this.db = null;
     request.onupgradeneeded = function (event) {
-        db = event.target.result;
-        let os = db.createObjectStore('comidas', {
+       this.db = event.target.result;
+        let os = this.db.createObjectStore('comidas', {
             autoIncrement: true
         });
-    }
-
+    }*/
   },
   methods: {
 
@@ -169,7 +185,6 @@ export default {
 
       if (fiabilidad > 0.5) {
         nombre = results[0].label;
-
         const repetido = await estaRepetido(nombre);
 
         if (!repetido) {
@@ -205,11 +220,43 @@ export default {
                 caloriasConsumidas = caloriasConsumidas + calorias;
                 document.querySelector("#totalkcal").innerHTML = caloriasConsumidas;
 
-            }
+             }
         }
 
-    }
+      }
 
+
+    },
+    insertar: async function(){
+      let app_id = "32d2feb5";
+      let app_key = "508377f6784f3295c05c8297f5c0eeda";
+      let peticion = await fetch("https://api.edamam.com/api/food-database/parser?ingr=" + this.comida +
+          "&app_id=" + app_id + "&app_key=" + app_key, {
+              method: "GET"
+          });
+      let peticionJson = await peticion.json();
+      let parseado = peticionJson.parsed;
+      console.log(peticionJson);
+      
+      if (parseado.length < 1) {
+          console.log("no es comida o no existe");
+          calorias = 0;
+      } else {
+          let nutrientes = parseado[0].food.nutrients;
+          this.calorias = nutrientes.ENERC_KCAL;
+      }
+      const tx = this.db.result.transaction(["comidas"], "readwrite");
+      const store = tx.objectStore("comidas");
+      console.log(this.comida);
+      
+      store.put({
+          name: this.comida,
+          kcal: this.calorias
+      });
+      tx.oncomplete = function () {
+          console.log("insertado");
+          
+      }
 
     }
         /* grabar: async function(){
@@ -278,10 +325,3 @@ export default {
 };
 
 </script>
-<style >
-    #div2 {
-        background-color: pink;
-        width: 200px;
-        height: 100px;
-    }
-</style>
