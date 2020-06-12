@@ -56,7 +56,8 @@ export default {
       idiomaOriginal: "",
       idiomas: [],
       x: "",
-      id: ""
+      id: "",
+      userid: sessionStorage.getItem('userid')
     };
   },
   async created() {
@@ -98,7 +99,9 @@ export default {
         translatedTitle: this.translatedTitle,
         translatedContent: this.translatedContent,
         datePost: today,
-        userId: 1
+        user: {
+          id: this.userid
+          }
       };
       let url = "http://localhost:8080/update";
       const axiospost = await axios.put(url, data, {
@@ -132,7 +135,9 @@ export default {
           translatedTitle: this.translatedTitle,
           translatedContent: this.translatedContent,
           datePost: today,
-          userId: 1
+           user: {
+              id: this.userid
+          }
         };
         let url = "http://localhost:8080/insert";
         const axiospost = await axios.post(url, data, {

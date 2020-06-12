@@ -38,6 +38,7 @@ export default {
         this.token = axiospost.data.jwt;
         console.log(axiospost.data);
         sessionStorage.setItem('token', this.token)
+        sessionStorage.setItem('userid', axiospost.data.userId)
         this.$router.push("/posts");
       }
   }

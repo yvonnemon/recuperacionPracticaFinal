@@ -33,35 +33,9 @@ public class PostController {
 
     @PostMapping("/insert")
     public String insertPost(@RequestBody Post body) throws ParseException {
-//        JsonObject jsonObject = gson.fromJson(body, JsonObject.class);
-//        System.out.println(jsonObject);
         System.out.println("entro al insert");
-        System.out.println(body.getDatePost());
-
-       // String x = jsonObject.get("holi").toString();
-       // System.out.println(x+'8');
-
-//        Post post = new Post();
-//        post.setContent(jsonObject.get("content").toString().replaceAll("\"",""));
-//        post.setTranslatedContent(jsonObject.get("translatedContent").toString().replaceAll("\"",""));
-//
-//        post.setLanguage(jsonObject.get("language").toString().replaceAll("\"",""));
-//        post.setOriginalLanguage(jsonObject.get("originalLanguage").toString().replaceAll("\"",""));
-//
-//        post.setTitle(jsonObject.get("title").toString().replaceAll("\"",""));
-//        post.setTranslatedTitle(jsonObject.get("translatedTitle").toString().replaceAll("\"",""));
-//
-//        String fechaString = jsonObject.get("date").toString();
-//        fechaString = fechaString.replaceAll("\"","");
-//        SimpleDateFormat fechita = new SimpleDateFormat("yyyy-MM-dd");
-//        Date f = fechita.parse(fechaString);
-//        System.out.println(f);
-//
-//        post.setDatePost(f);
-        body.setUser(userManager.findById(1));
-//
+        body.setUser(userManager.findById(body.getUser().getId()));
         postManager.save(body);
-//        System.out.println("added");
         return "added";
     }
 
@@ -81,19 +55,7 @@ public class PostController {
 
     @PutMapping("/update")
     public String updatePost(@RequestBody Post body){
-//        Post post = body;
-//        post.setId(1);
-//        post.setContent("holo");
-//        post.setTranslatedContent("holiowiws");
-//
-//        post.setLanguage("norcoreanoxd");
-//        post.setOriginalLanguage("surcoreanoxd");
-//
-//        post.setTitle("titulinsito");
-//        post.setTranslatedTitle("titulinsote");
-//
-//        post.setDatePost(LocalDate.now());
-        body.setUser(userManager.findById(1));
+        body.setUser(userManager.findById(body.getUser().getId()));
 
         postManager.uppdatePost(body);
         System.out.println("updated");

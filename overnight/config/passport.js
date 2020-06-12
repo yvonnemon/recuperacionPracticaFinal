@@ -43,12 +43,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var passport = require('passport');
 var passportLocal = __importStar(require("passport-local"));
 require("./database");
 var UserDao_1 = require("../dao/UserDao");
 //import { findAndValidate } from '../dao/UserDao'
+var passport = require('passport');
 var LocalStrategy = passportLocal.Strategy;
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(new LocalStrategy({
     usernameField: 'user',
     passwordField: 'pass'
@@ -80,6 +81,22 @@ passport.use(new LocalStrategy({
                     }
                     return [2 /*return*/];
             }
+        });
+    });
+}));
+passport.use(new GoogleStrategy({
+    clientID: "942070895288-9peui0amtjopi13m1t6eq6ib266c020o.apps.googleusercontent.com",
+    clientSecret: "mpeulc33ujD5ZW1YLM8536nA",
+    callbackURL: "http://localhost:3000/auth/google/callback"
+}, function (accessToken, refreshToken, profile, cb, done) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            console.log(profile.email);
+            return [2 /*return*/, done(null, {
+                    username: 'pepe',
+                    name: 'pepe',
+                    apellido: 'popo'
+                })];
         });
     });
 }));
