@@ -1,29 +1,38 @@
 <template>
-  <div class="q-pa-md" >
+  <div class="q-pa-md">
     <div class="q-gutter-sm">
       <q-radio v-model="sexo" val="hombre" label="hombre" />
       <q-radio v-model="sexo" val="mujer" label="mujer" />
       <q-input step="1" min="0" outlined v-model="peso" type="number" label="Peso en kilos" />
       <q-input step="1" min="0" outlined v-model="altura" type="number" label="Altura en cm" />
       <q-input step="1" min="0" outlined v-model="edad" type="number" label="Edad" />
-      <q-select standout="bg-teal text-white" v-model="ejercicio" :options="options" label="Ejercicio semanal" />
-      <q-btn color="purple" label="Calcular" @click="calcular"/>
-      <q-input v-model="calorias" filled type="number" readonly hint="Tus calorias diarias son:"/>
+      <q-select
+        standout="bg-teal text-white"
+        v-model="ejercicio"
+        :options="options"
+        label="Ejercicio semanal"
+      />
+      <q-btn color="purple" label="Calcular" @click="calcular" />
+      <q-input v-model="calorias" filled type="number" readonly hint="Tus calorias diarias son:" />
 
-      <div>{{video}}</div>
-          <q-input v-model="comida" label="inserte el alimento comsumido para contar las calorias" class="separacion" />
+      <div id="video"></div>
+      <q-input
+        v-model="comida"
+        label="inserte el alimento comsumido para contar las calorias"
+        class="separacion"
+      />
 
-            <q-btn color="purple" label="Añadir alimento" @click="insertar"/>
-
+      <q-btn color="purple" label="Añadir alimento" @click="peticion" />
+      <q-toggle v-model="cam" color="red" />
       <video id="camara" width="100%" height="200" autoplay></video>
     </div>
   </div>
 </template>
 
 <script>
-const axios = require('axios');
+const axios = require("axios");
+
 export default {
-  
   data() {
     return {
       sexo: "",
@@ -31,7 +40,13 @@ export default {
       edad: 0,
       altura: 0,
       calorias: "",
-      options: ["Poco ejercicio","Ejercicio Ligero","Ejercicio Moderado","Ejercicio Fuerte","Ejercicio profesional"],
+      options: [
+        "Poco ejercicio",
+        "Ejercicio Ligero",
+        "Ejercicio Moderado",
+        "Ejercicio Fuerte",
+        "Ejercicio profesional"
+      ],
       ejercicio: "",
       label: "",
       confidence: "",
@@ -43,26 +58,25 @@ export default {
       comida: "",
       databaseName: "comidas",
       databaseTable: "comidas",
-      db: null
+      db: null,
+      cam: false
     };
   },
   async created() {
     this.db = indexedDB.open(this.databaseName, 1);
 
-    this.db.onupgradeneeded = async function (upgradeDB) {
-        const database = upgradeDB.target.result;
-        const tabla = database.createObjectStore(this.databaseName, {keyPath: "name"});
-        
-        
-      }.bind(this);
+    this.db.onupgradeneeded = async function(upgradeDB) {
+      const database = upgradeDB.target.result;
+      const tabla = database.createObjectStore(this.databaseName, {
+        keyPath: "name"
+      });
+    }.bind(this);
 
-      this.db.onsuccess = function (ev) {
-        
-          ev.target.result;
-        
-      }.bind(this);
+    this.db.onsuccess = function(ev) {
+      ev.target.result;
+    }.bind(this);
 
-/*  let nombre;
+    /*  let nombre;
     let calorias;
     //para que funcione hay que actualizar la version, si no petara al primer item detectado
     let version = 1;
@@ -76,111 +90,125 @@ export default {
     }*/
   },
   methods: {
-
-      calcular: function(){
-          let tmb;
-          let ejerc;
-        if(this.sexo == ""){
-            console.log("no has dicho tu sexo");
-            
+    calcular: function() {
+      let tmb;
+      let ejerc;
+      if (this.sexo == "") {
+        console.log("no has dicho tu sexo");
+      } else {
+        if (this.sexo == "mujer") {
+          tmb = 10 * this.peso + 6.25 * this.altura - 5 * this.edad - 161;
         } else {
-            if(this.sexo == "mujer"){
-                tmb = (10 * this.peso) + (6.25 * this.altura) - (5 * this.edad) - 161;
-            } else {
-                tmb = (10 * this.peso) + (6.25 * this.altura) - (5 * this.edad) + 5;
-            }
-
-            if (this.ejercicio == "Poco ejercicio") {
-                console.log("poco");
-                ejerc = 1.2;
-            } else if (this.ejercicio == "Ejercicio Ligero") {
-                console.log("2");
-                ejerc = 1.375;
-            } else if (this.ejercicio == "Ejercicio Moderado") {
-                console.log("3");
-                ejerc = 1.55;
-            } else if (this.ejercicio == "Ejercicio Fuerte") {
-                console.log("4");
-                ejerc = 1.725;
-            } else if (this.ejercicio == "Ejercicio profesional") {
-                console.log("5");
-                ejerc = 1.9;
-            } else {
-                console.log("no pusiste tu ejercicio, el default sera el medio");
-                ejerc = 1.55;
-            }
-
-            this.calorias = tmb * ejerc;
+          tmb = 10 * this.peso + 6.25 * this.altura - 5 * this.edad + 5;
         }
-      },
+
+        if (this.ejercicio == "Poco ejercicio") {
+          console.log("poco");
+          ejerc = 1.2;
+        } else if (this.ejercicio == "Ejercicio Ligero") {
+          console.log("2");
+          ejerc = 1.375;
+        } else if (this.ejercicio == "Ejercicio Moderado") {
+          console.log("3");
+          ejerc = 1.55;
+        } else if (this.ejercicio == "Ejercicio Fuerte") {
+          console.log("4");
+          ejerc = 1.725;
+        } else if (this.ejercicio == "Ejercicio profesional") {
+          console.log("5");
+          ejerc = 1.9;
+        } else {
+          console.log("no pusiste tu ejercicio, el default sera el medio");
+          ejerc = 1.55;
+        }
+
+        this.calorias = tmb * ejerc;
+      }
+    },
     preload: async function() {
-      const video = document.querySelector('#camara');
-      this.stream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
+      const video = document.querySelector("#camara");
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: true
+      });
       video.srcObject = this.stream;
       this.video = video;
-      this.STOP_LOOP = false;
-      console.log("aqui")
-      let clasifier = ml5.imageClassifier('MobileNet', video);
-      console.log("aquidos")
-      this.classifier = clasifier;
+      console.log("aqui");
+      console.log("aquidos");
+      //this.classifier = clasifier;
       let x = 0;
-        while(x < 100){
-          console.log("aquitres")
-          this.peticion(clasifier);
-          x++;
-        }
+      this.peticion();
+    }, //no hay forma de que funcione el classifier.classify
+    peticion: async function() {
+      if (this.cam) {
+        
+          const video = document.querySelector("#camara");
+          this.stream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: true
+          });
+          video.srcObject = this.stream;
+          this.video = video;
 
-      
-    },//no hay forma de que funcione el classifier.classify
-    peticion: async function(clasifier){
-      let clas = ml5.imageClassifier('MobileNet', this.video);
-        console.log("cuatro")
-        //let clas = this.classifier;
-        clas.classify().then(results => { 
-        this.label = results[0].label;
-        this.confidence = results[0].confidence.toFixed(2);
-        });
+          //this.classifier = clasifier;
+          let x = 0;
+          //this.peticion();
 
-      if(this.confidence >= 0.2){
-            let app_id = "3cd7f551";
-            let app_key = "b7505d564aa4b8aee146898fc94e1deb";
+          let clasifier = await ml5.imageClassifier("MobileNet", video);
+          //let clas = this.classifier;
+          clasifier.classify().then(results => {
+            this.label = results[0].label;
+            this.confidence = results[0].confidence.toFixed(2);
+            console.log(this.confidence);
+          });
 
-            let peticion = await fetch("https://api.edamam.com/api/food-database/parser?ingr=" + this.label +
-                "&app_id=" + app_id + "&app_key=" + app_key, {
-                    method: "GET"
-                });
+          if (this.confidence >= 0.5) {
+            console.log("conf > 0.5");
+
+            let app_id = "32d2feb5";
+            let app_key = "508377f6784f3295c05c8297f5c0eeda";
+            let peticion = await fetch(
+              "https://api.edamam.com/api/food-database/parser?ingr=" +
+                this.label +
+                "&app_id=" +
+                app_id +
+                "&app_key=" +
+                app_key,
+              {
+                method: "GET"
+              }
+            );
             let peticionJson = await peticion.json();
             let parseado = peticionJson.parsed;
+            console.log(peticionJson);
 
             if (parseado.length < 1) {
-                console.log("no es comida o no existe");
-                calorias = 0;
+              console.log("no es comida o no existe");
+              this.calorias = 0;
             } else {
-                let nutrientes = parseado[0].food.nutrients;
-                calorias = nutrientes.ENERC_KCAL;
-
+              let nutrientes = parseado[0].food.nutrients;
+              this.calorias = nutrientes.ENERC_KCAL;
             }
-
-            let tx = db.transaction(["comidas"], "readwrite");
-            let store = tx.objectStore("comidas");
+            const tx = this.db.result.transaction(["comidas"], "readwrite");
+            const store = tx.objectStore("comidas");
+            console.log(this.label);
 
             store.put({
-                name: this.label,
-                kcal: 8
+              name: this.label,
+              kcal: 27
             });
-            tx.oncomplete = function () {
-                console.log("insertado");
-                caloriasConsumidas = caloriasConsumidas + calorias;
-                document.querySelector("#totalkcal").innerHTML = caloriasConsumidas;
-
-            }
-
-        }
+            tx.oncomplete = function() {
+              console.log("insertado");
+            };
+          }
+        
+      }
+      //this.peticion()
     },
     gotResult: async function(error, results) {
       if (error) {
         console.error(error);
-      } 
+      }
       let fiabilidad = nf(results[0].confidence, 0, 2);
 
       if (fiabilidad > 0.5) {
@@ -188,78 +216,85 @@ export default {
         const repetido = await estaRepetido(nombre);
 
         if (!repetido) {
-            console.log("inserto");
-            let app_id = "3cd7f551";
-            let app_key = "b7505d564aa4b8aee146898fc94e1deb";
+          console.log("inserto");
+          let app_id = "3cd7f551";
+          let app_key = "b7505d564aa4b8aee146898fc94e1deb";
 
-            let peticion = await fetch("https://api.edamam.com/api/food-database/parser?ingr=" + nombre +
-                "&app_id=" + app_id + "&app_key=" + app_key, {
-                    method: "GET"
-                });
-            let peticionJson = await peticion.json();
-            let parseado = peticionJson.parsed;
-
-            if (parseado.length < 1) {
-                console.log("no es comida o no existe");
-                calorias = 0;
-            } else {
-                let nutrientes = parseado[0].food.nutrients;
-                calorias = nutrientes.ENERC_KCAL;
-
+          let peticion = await fetch(
+            "https://api.edamam.com/api/food-database/parser?ingr=" +
+              nombre +
+              "&app_id=" +
+              app_id +
+              "&app_key=" +
+              app_key,
+            {
+              method: "GET"
             }
+          );
+          let peticionJson = await peticion.json();
+          let parseado = peticionJson.parsed;
 
-            let tx = db.transaction(["comidas"], "readwrite");
-            let store = tx.objectStore("comidas");
+          if (parseado.length < 1) {
+            console.log("no es comida o no existe");
+            calorias = 0;
+          } else {
+            let nutrientes = parseado[0].food.nutrients;
+            calorias = nutrientes.ENERC_KCAL;
+          }
 
-            store.put({
-                name: nombre,
-                kcal: 8
-            });
-            tx.oncomplete = function () {
-                console.log("insertado");
-                caloriasConsumidas = caloriasConsumidas + calorias;
-                document.querySelector("#totalkcal").innerHTML = caloriasConsumidas;
+          let tx = db.transaction(["comidas"], "readwrite");
+          let store = tx.objectStore("comidas");
 
-             }
+          store.put({
+            name: nombre,
+            kcal: 8
+          });
+          tx.oncomplete = function() {
+            console.log("insertado");
+            caloriasConsumidas = caloriasConsumidas + calorias;
+            document.querySelector("#totalkcal").innerHTML = caloriasConsumidas;
+          };
         }
-
       }
-
-
     },
-    insertar: async function(){
+    insertar: async function() {
       let app_id = "32d2feb5";
       let app_key = "508377f6784f3295c05c8297f5c0eeda";
-      let peticion = await fetch("https://api.edamam.com/api/food-database/parser?ingr=" + this.comida +
-          "&app_id=" + app_id + "&app_key=" + app_key, {
-              method: "GET"
-          });
+      let peticion = await fetch(
+        "https://api.edamam.com/api/food-database/parser?ingr=" +
+          this.comida +
+          "&app_id=" +
+          app_id +
+          "&app_key=" +
+          app_key,
+        {
+          method: "GET"
+        }
+      );
       let peticionJson = await peticion.json();
       let parseado = peticionJson.parsed;
       console.log(peticionJson);
-      
+
       if (parseado.length < 1) {
-          console.log("no es comida o no existe");
-          calorias = 0;
+        console.log("no es comida o no existe");
+        calorias = 0;
       } else {
-          let nutrientes = parseado[0].food.nutrients;
-          this.calorias = nutrientes.ENERC_KCAL;
+        let nutrientes = parseado[0].food.nutrients;
+        this.calorias = nutrientes.ENERC_KCAL;
       }
       const tx = this.db.result.transaction(["comidas"], "readwrite");
       const store = tx.objectStore("comidas");
       console.log(this.comida);
-      
-      store.put({
-          name: this.comida,
-          kcal: this.calorias
-      });
-      tx.oncomplete = function () {
-          console.log("insertado");
-          
-      }
 
+      store.put({
+        name: this.comida,
+        kcal: this.calorias
+      });
+      tx.oncomplete = function() {
+        console.log("insertado");
+      };
     }
-        /* grabar: async function(){
+    /* grabar: async function(){
             const video = document.querySelector('#camara');
             this.stream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
               video.srcObject = this.stream;
@@ -320,8 +355,6 @@ export default {
               };
             }
             }*/
-
   }
 };
-
 </script>

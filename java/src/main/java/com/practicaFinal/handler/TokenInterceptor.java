@@ -23,18 +23,22 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         System.out.println("estas en el handler");
-
-        String auth = request.getHeader("Authorization");
-        System.out.println(auth);
-        if(auth == null){
+        if(request.getMethod().equals("OPTIONS")){
             return true;
         }
+        String auth = request.getHeader("Authorization");
+        System.out.println(auth);
         System.out.println(auth);
         String token = auth.split(" ")[1];
 
-        //String valido = tokenManager.validateToken(token);
-
-       // System.out.println("----"+valido);
+        //TODO esto hay que arreglarlo V, esta en twitch el codigo
+//        if(token != null && !token.isEmpty()){
+//            String tokensito = token.replace("Bearer ","");
+//            Boolean validar = tokenManager.validateToken(token);
+//            if(){
+//                validar.equals()
+//            }
+//        }
         // Esto es un arreglo hasta que el profe te diga como hacerlo.
         TokenManager tokenManager = Utils.getBean(TokenManager.class);
 
