@@ -34,12 +34,12 @@ export default {
       this.$router.push("/")
     }
 
-    console.log("token");
-    let res = await axios.get('http://localhost:3000/api/users/token/' +this.user +"/" + this.apellido);
-    let data = res.data.jwt;
-    this.token = data;
-
-    sessionStorage.setItem('token', this.token)
+//    console.log("token");
+//    let res = await axios.get('http://localhost:3000/api/users/token/' +this.user +"/" + this.apellido);
+//    let data = res.data.jwt;
+//    this.token = data;
+//
+//    sessionStorage.setItem('token', this.token)
     sessionStorage.removeItem('postUpdate')
 
     this.listarPosts(this.token);

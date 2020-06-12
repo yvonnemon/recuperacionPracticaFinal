@@ -23,10 +23,14 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         System.out.println("estas en el handler");
-        if(request.getMethod().equals("OPTIONS")){
+//        if(request.getMethod().equals("OPTIONS")){
+//            return true;
+//        }
+        String auth = request.getHeader("Authorization");
+        if(auth == null){
             return true;
         }
-        String auth = request.getHeader("Authorization");
+
         System.out.println(auth);
         System.out.println(auth);
         String token = auth.split(" ")[1];

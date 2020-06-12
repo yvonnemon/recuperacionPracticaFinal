@@ -8,7 +8,22 @@ import * as jwt from 'jsonwebtoken';
  
 @Controller('auth')
 export class UserController {
-     @Post('login')
+ 
+    @Get('token/:name/:apellido')
+    private getJwt(req: Request, res: Response){
+        /*const tokensito = JwtManager.jwt({
+            nombre: req.params.x
+        });*/
+        var jwt = require('jsonwebtoken');
+        var tokensito = jwt.sign({
+            nombre: req.params.name,
+            apellido: req.params.apellido
+        },'Secretin secretado, este Secreto esta Encriptado',{algorithm: 'HS256'});
+        return res.status(OK).json({
+            jwt: tokensito,
+        });
+    }
+    @Post('login')
     private getUsers(req: Request, res: Response) {
         passport.authenticate('local', {session: false}, (err:any,user:any, info:any)=>{
 
@@ -23,12 +38,15 @@ export class UserController {
             req.login(user, {session: false}, (err)=>{
                 //Construir el jwt
 
-                const token = jwt.sign(user, 'thisisthejwtsecretABCZD', {
-                    expiresIn: '7d',
-                    subject: user.iduser + "" //Cast to string
+                var jwt = require('jsonwebtoken');
+                var tokensito = jwt.sign({
+                    nombre: req.params.name,
+                    apellido: req.params.apellido
+                },'Secretin secretado, este Secreto esta Encriptado',{algorithm: 'HS256'});
+                return res.status(OK).json({
+                    jwt: tokensito,
                 });
-
-                return res.json(token)
+        
             })
         })(req,res)
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md" >
     
-    <q-input filled v-model="text" label="Usuario" stack-label class="separacion"/>
+    <q-input filled v-model="user" label="Usuario" stack-label class="separacion"/>
     <q-input filled v-model="password" label="Contraseña" stack-label class="separacion" type="password" />
     <q-btn color="deep-orange" glossy label="Login" @click="login"/>
   
@@ -13,16 +13,32 @@ const axios = require('axios');
 export default {
   data() {
     return {
-        text: "",
-        password: ""
+        user: "",
+        password: "",
+        token: ""
     };
   },
   async created() {
+      sessionStorage.removeItem('token')
   },
   methods: {
       login: async function(){
           console.log("hola");
-          
+        const data = {
+          user: this.user,
+          pass: this.password,
+        };
+        let url = "http://localhost:3000/auth/login";
+        const axiospost = await axios.post(url, data, {
+          headers: {
+            Authorization: "Bearer " + this.token,
+            "Content-Type": "application/json"
+          }
+        });
+        this.token = axiospost.data.jwt;
+        console.log(axiospost.data);
+        sessionStorage.setItem('token', this.token)
+        this.$router.push("/posts");
       }
   }
 };
