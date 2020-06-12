@@ -30,6 +30,10 @@ export default {
     };
   },
   async created() {
+    if(sessionStorage.getItem("token") == null){
+      this.$router.push("/")
+    }
+
     console.log("token");
     let res = await axios.get('http://localhost:3000/api/users/token/' +this.user +"/" + this.apellido);
     let data = res.data.jwt;

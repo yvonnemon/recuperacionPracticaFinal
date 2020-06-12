@@ -3,15 +3,11 @@
     <div class="q-gutter-sm">
       <q-radio v-model="sexo" val="hombre" label="hombre" />
       <q-radio v-model="sexo" val="mujer" label="mujer" />
-      <q-input step="1" min="0" outlined v-model="peso" type="number" label="Peso en kilos" />
-      <q-input step="1" min="0" outlined v-model="altura" type="number" label="Altura en cm" />
-      <q-input step="1" min="0" outlined v-model="edad" type="number" label="Edad" />
-      <q-select
-        standout="bg-teal text-white"
-        v-model="ejercicio"
-        :options="options"
-        label="Ejercicio semanal"
-      />
+      <q-input class="separacion" step="1" min="0" outlined v-model="peso" type="number" label="Peso en kilos" />
+      <q-input class="separacion" step="1" min="0" outlined v-model="altura" type="number" label="Altura en cm" />
+      <q-input class="separacion" step="1" min="0" outlined v-model="edad" type="number" label="Edad" />
+      <q-select standout="bg-teal text-white" v-model="ejercicio" :options="options" label="Ejercicio semanal" />
+      
       <q-btn color="purple" label="Calcular" @click="calcular" />
       <q-input v-model="calorias" filled type="number" readonly hint="Tus calorias diarias son:" />
 
@@ -202,6 +198,9 @@ export default {
             };
           }
         
+      } else {
+        console.log('camara apagada');
+        
       }
       //this.peticion()
     },
@@ -358,3 +357,11 @@ export default {
   }
 };
 </script>
+<style >
+.separacion {
+  margin-bottom: 10px;
+}
+#originalContent {
+  visibility: hidden;
+}
+</style>

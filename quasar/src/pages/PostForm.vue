@@ -60,6 +60,9 @@ export default {
     };
   },
   async created() {
+    if(sessionStorage.getItem("token") == null){
+      this.$router.push("/")
+    }
     this.listaridiomas();
     if (sessionStorage.getItem("postUpdate")) {
       let post = JSON.parse(sessionStorage.getItem("postUpdate"));
@@ -268,11 +271,3 @@ function errorMsg(msg, error) {
   }
 }
 </script>
-<style >
-.separacion {
-  margin-bottom: 10px;
-}
-#originalContent {
-  visibility: hidden;
-}
-</style>

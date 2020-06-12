@@ -18,7 +18,7 @@ export class SampleServer extends Server {
         const options:cors.CorsOptions = {
             origin: whitelist,
             credentials: true,
-            allowedHeaders: 'Authorization, Origin, X-Requested-With, Conten-Type, Accept',
+            allowedHeaders: 'Authorization, Origin, X-Requested-With, Content-Type, Accept',
             methods: 'POST, GET, DELETE, PUT, OPTIONS',
             maxAge: 3600
         }
