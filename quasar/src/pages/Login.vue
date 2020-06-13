@@ -4,7 +4,9 @@
     <q-input filled v-model="user" label="Usuario" stack-label class="separacion"/>
     <q-input filled v-model="password" label="Contraseña" stack-label class="separacion" type="password" />
     <q-btn color="deep-orange" glossy label="Login" @click="login"/>
-  
+    <a :href="google"><q-btn color="deep-orange" glossy label="Google" /></a>
+    
+
   </div>
 </template>
 
@@ -15,11 +17,37 @@ export default {
     return {
         user: "",
         password: "",
-        token: ""
+        token: "",
+        google: "http://localhost:3000/auth/google"
     };
   },
   async created() {
-      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('token');
+      let separar;
+      if(window.location.href.includes('?')){
+      separar = window.location.href.split("?");
+
+      }
+
+      if(separar != undefined){
+      let datos = separar[1];
+      console.log(datos);
+      
+      let datos2 = datos.split('&');
+      console.log(datos2);
+
+      let usergoogle = datos2[1];
+      let tokengoogle = datos2[0]
+      console.log(usergoogle.replace("%40",'@'));
+      
+
+        console.log("undefinedsito");
+        this.token = tokengoogle;
+        sessionStorage.setItem('token', this.token);
+        sessionStorage.setItem('user', usergoogle.replace("%40",'@'));
+        this.$router.push("/posts");
+      }
+      
   },
   methods: {
       login: async function(){

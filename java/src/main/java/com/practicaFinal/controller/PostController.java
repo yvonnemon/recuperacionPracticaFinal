@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.practicaFinal.manager.PostManager;
 import com.practicaFinal.manager.UserManager;
 import com.practicaFinal.model.Post;
+import com.practicaFinal.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +33,24 @@ public class PostController {
     }
 
     @PostMapping("/insert")
-    public String insertPost(@RequestBody Post body) throws ParseException {
+    public String insertPost(@RequestBody Post body) {
         System.out.println("entro al insert");
-        body.setUser(userManager.findById(body.getUser().getId()));
+        if (body.getUser().getId() == null){
+            User user = new User();
+            user.setEmail(body.getUser().getEmail());
+            user.setName("");
+            user.setLastname("");
+            user.setPassword(body.getUser().getEmail());
+            userManager.save(user);
+
+            body.setUser(userManager.findByEmail(body.getUser().getEmail()));
+
+        } else {
+            body.setUser(userManager.findById(body.getUser().getId()));
+        }
+
+
+
         postManager.save(body);
         return "added";
     }
@@ -55,7 +71,20 @@ public class PostController {
 
     @PutMapping("/update")
     public String updatePost(@RequestBody Post body){
-        body.setUser(userManager.findById(body.getUser().getId()));
+
+        if (body.getUser().getId() == null){
+            User user = new User();
+            user.setEmail(body.getUser().getEmail());
+            user.setName("");
+            user.setLastname("");
+            user.setPassword(body.getUser().getEmail());
+            userManager.save(user);
+
+            body.setUser(userManager.findByEmail(body.getUser().getEmail()));
+
+        } else {
+            body.setUser(userManager.findById(body.getUser().getId()));
+        }
 
         postManager.uppdatePost(body);
         System.out.println("updated");

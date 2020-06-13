@@ -127,6 +127,12 @@ export default {
         today = yyyy + "-" + mm + "-" + dd;
 
         console.log(this.token);
+        let asd = {
+          id: this.userid,
+          email: sessionStorage.getItem('user')
+        }
+        console.log(asd);
+        
         const data = {
           title: this.originalTitle,
           content: this.originalContent,
@@ -135,9 +141,8 @@ export default {
           translatedTitle: this.translatedTitle,
           translatedContent: this.translatedContent,
           datePost: today,
-           user: {
-              id: this.userid
-          }
+          user: asd
+          
         };
         let url = "http://localhost:8080/insert";
         const axiospost = await axios.post(url, data, {
@@ -276,3 +281,12 @@ function errorMsg(msg, error) {
   }
 }
 </script>
+<style>
+  #originalContent {
+    display: none;
+  }
+  .separacion {
+  margin-bottom: 10px;
+}
+
+</style>

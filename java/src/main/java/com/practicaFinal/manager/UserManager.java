@@ -13,4 +13,12 @@ public class UserManager {
     public User findById(Integer id){
         return userRepository.findById(id).orElse(null);
     }
+
+    public void save(User user){
+        userRepository.save(user);
+    }
+
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
 }

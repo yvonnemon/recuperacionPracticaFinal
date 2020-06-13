@@ -10,6 +10,7 @@
       
       <q-btn color="purple" label="Calcular" @click="calcular" />
       <q-input v-model="calorias" filled type="number" readonly hint="Tus calorias diarias son:" />
+      <q-input v-model="caloriasConsumidas" filled type="number" readonly hint="Calorias consumidas:" />
 
       <div id="video"></div>
       <q-input
@@ -36,6 +37,7 @@ export default {
       edad: 0,
       altura: 0,
       calorias: "",
+      caloriasConsumidas: 0,
       options: [
         "Poco ejercicio",
         "Ejercicio Ligero",
@@ -47,10 +49,7 @@ export default {
       label: "",
       confidence: "",
       video: "",
-      nombre: "",
-      nombreKCal: "",
       stream: null,
-      classifier: "",
       comida: "",
       databaseName: "comidas",
       databaseTable: "comidas",
@@ -72,18 +71,6 @@ export default {
       ev.target.result;
     }.bind(this);
 
-    /*  let nombre;
-    let calorias;
-    //para que funcione hay que actualizar la version, si no petara al primer item detectado
-    let version = 1;
-    const request = indexedDB.open("comidas", version);
-    this.db = null;
-    request.onupgradeneeded = function (event) {
-       this.db = event.target.result;
-        let os = this.db.createObjectStore('comidas', {
-            autoIncrement: true
-        });
-    }*/
   },
   methods: {
     calcular: function() {
@@ -180,10 +167,12 @@ export default {
 
             if (parseado.length < 1) {
               console.log("no es comida o no existe");
-              this.calorias = 0;
+              console.log("para probar que se suman, pondre 8 ");
+              
+              this.caloriasConsumidas = this.caloriasConsumidas + 8;
             } else {
               let nutrientes = parseado[0].food.nutrients;
-              this.calorias = nutrientes.ENERC_KCAL;
+              this.caloriasConsumidas = nutrientes.ENERC_KCAL;
             }
             const tx = this.db.result.transaction(["comidas"], "readwrite");
             const store = tx.objectStore("comidas");
@@ -203,58 +192,6 @@ export default {
         
       }
       //this.peticion()
-    },
-    gotResult: async function(error, results) {
-      if (error) {
-        console.error(error);
-      }
-      let fiabilidad = nf(results[0].confidence, 0, 2);
-
-      if (fiabilidad > 0.5) {
-        nombre = results[0].label;
-        const repetido = await estaRepetido(nombre);
-
-        if (!repetido) {
-          console.log("inserto");
-          let app_id = "3cd7f551";
-          let app_key = "b7505d564aa4b8aee146898fc94e1deb";
-
-          let peticion = await fetch(
-            "https://api.edamam.com/api/food-database/parser?ingr=" +
-              nombre +
-              "&app_id=" +
-              app_id +
-              "&app_key=" +
-              app_key,
-            {
-              method: "GET"
-            }
-          );
-          let peticionJson = await peticion.json();
-          let parseado = peticionJson.parsed;
-
-          if (parseado.length < 1) {
-            console.log("no es comida o no existe");
-            calorias = 0;
-          } else {
-            let nutrientes = parseado[0].food.nutrients;
-            calorias = nutrientes.ENERC_KCAL;
-          }
-
-          let tx = db.transaction(["comidas"], "readwrite");
-          let store = tx.objectStore("comidas");
-
-          store.put({
-            name: nombre,
-            kcal: 8
-          });
-          tx.oncomplete = function() {
-            console.log("insertado");
-            caloriasConsumidas = caloriasConsumidas + calorias;
-            document.querySelector("#totalkcal").innerHTML = caloriasConsumidas;
-          };
-        }
-      }
     },
     insertar: async function() {
       let app_id = "32d2feb5";
@@ -293,67 +230,6 @@ export default {
         console.log("insertado");
       };
     }
-    /* grabar: async function(){
-            const video = document.querySelector('#camara');
-            this.stream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
-              video.srcObject = this.stream;
-              this.STOP_LOOP = false;
-              let clasifier = await ml5.imageClassifier('MobileNet', video);
-              this.loop(clasifier);
-
-              // Parar y mandar a peticion API
-              const bar = this.$refs.bar;
-              bar.start();
-              this.STOP_LOOP = true;
-              this.stream.getTracks().forEach(function (track) {
-                track.stop();
-              });
-              const alimentos = this.getAll();
-              alimentos.onsuccess = async function (ev) {
-                const allfood = ev.target.result;
-                const promesas = [];
-                allfood.forEach(individualFood => {
-                  if (!individualFood.kcal) {
-                    const promesa = this.peticionComida(individualFood.nombre);
-                    promesas.push(promesa)
-                  }
-                });
-                const result = await Promise.all(promesas);
-                result.forEach(food => {
-                  if (food.isFood !== false) {
-                    this.updateFood(food);
-                  } else {
-                    this.removeFood(food);
-                  }
-                });
-                const allTheFood = this.getAll();
-                allTheFood.onsuccess = function (ev) {
-                  this.allFoodItems.length = 0;
-                  ev.target.result.forEach(item => {
-                    this.allFoodItems.push(item)
-                  });
-                  this.$refs.bar.stop();
-                }.bind(this)
-              }.bind(this)
-            },
-            peticionComida: async function(nombre){
-            const APP_ID = "3cd7f551";
-            const API_KEY = "b7505d564aa4b8aee146898fc94e1deb";
-              const result = await fetch("https://api.edamam.com/api/food-database/parser?app_id=" + APP_ID + "&app_key=" + API_KEY + "&ingr=" + nombre).then(x => x.json());
-              if (result.parsed.length > 0) {
-              const kcal = result.parsed[0].food.nutrients.ENERC_KCAL;
-            return {
-                nombre: foodName,
-                kcal: kcal,
-                isFood: true
-              }
-            } else {
-              return {
-                nombre: foodName,
-                isFood: false
-              };
-            }
-            }*/
   }
 };
 </script>

@@ -62,6 +62,8 @@ export class UserController {
     @Get('google')
     @Middleware(passport.authenticate('google', {scope: ['email', 'profile']}))
     private google(user:any, req: Request, res: Response){
+        console.log("holi");
+        
         return res.end();   
     }
 
@@ -75,18 +77,19 @@ export class UserController {
         
         passport.authenticate('google', { failureRedirect: '/login' }),
         function(req:any, res:any) {
-            // Successful authentication, redirect home.
-            console.log('holli');
-
-            var tokensito = jwt.sign({
+            console.log(req.user['username']);
+            let email = req.user['username'];
+            
+            let tokensito = jwt.sign({
                 email: req.user['username'],
                 apellido: req.user['apellido'],
                 nombre: req.user['name']
             },'Secretin secretado, este Secreto esta Encriptado',{algorithm: 'HS256'});
-            return res.status(OK).json({
+
+           /* return res.status(OK).json({
                 jwt: tokensito
-            });
-            
+            });*/
+            res.redirect("http://localhost:8085/#/?"+tokensito+ "&"+ email)
         }(req,res)
     }
 

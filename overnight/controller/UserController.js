@@ -100,6 +100,7 @@ var UserController = /** @class */ (function () {
         })(req, res);
     };
     UserController.prototype.google = function (user, req, res) {
+        console.log("holi");
         return res.end();
     };
     UserController.prototype.idk = function (req, res) {
@@ -109,16 +110,17 @@ var UserController = /** @class */ (function () {
                 console.log(req.user);
                 passport.authenticate('google', { failureRedirect: '/login' }),
                     function (req, res) {
-                        // Successful authentication, redirect home.
-                        console.log('holli');
+                        console.log(req.user['username']);
+                        var email = req.user['username'];
                         var tokensito = jwt.sign({
                             email: req.user['username'],
                             apellido: req.user['apellido'],
                             nombre: req.user['name']
                         }, 'Secretin secretado, este Secreto esta Encriptado', { algorithm: 'HS256' });
-                        return res.status(http_status_codes_1.OK).json({
-                            jwt: tokensito
-                        });
+                        /* return res.status(OK).json({
+                             jwt: tokensito
+                         });*/
+                        res.redirect("http://localhost:8085/#/?" + tokensito + "&" + email);
                     }(req, res);
                 return [2 /*return*/];
             });

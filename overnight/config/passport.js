@@ -101,7 +101,7 @@ passport.use(new GoogleStrategy({
         return __generator(this, function (_a) {
             console.log(profile);
             return [2 /*return*/, done(null, {
-                    username: profile.display_name,
+                    username: profile.email,
                     name: profile.given_name,
                     apellido: profile.family_name
                 })];
