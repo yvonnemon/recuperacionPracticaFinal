@@ -1,9 +1,10 @@
 <template>
   <div class="q-pa-md" >
-    <q-list dense bordered padding class="rounded-borders" v-for="post in posts" :key="post['id']"
-    >
+    <q-input rounded outlined v-model="filtro" class="separacion" label="Buscar" @keyup="filtrar()"/>
+
+    <q-list dense bordered padding class="rounded-borders separacion" v-for="post in postsFiltro" :key="post['id']">
       <q-item v-ripple>
-        <q-item-section v-model="elpost" >
+        <q-item-section v-model="elpost">
         <h6 post.key style="word-break: break-word;">{{ post["title"] }}</h6>
           <p  style="word-break: break-word;">{{ post["translatedContent"] }}</p>
           <div>
@@ -23,6 +24,8 @@ export default {
   data() {
     return {
       posts: [],
+      postsFiltro: [],
+      filtro: "",
       user: "pepe",
       apellido: "popo",
       token: "",
@@ -34,17 +37,18 @@ export default {
       this.$router.push("/")
     }
     
-//    console.log("token");
-//    let res = await axios.get('http://localhost:3000/api/users/token/' +this.user +"/" + this.apellido);
-//    let data = res.data.jwt;
-//    this.token = data;
-//
-//    sessionStorage.setItem('token', this.token)
     sessionStorage.removeItem('postUpdate')
 
     this.listarPosts(this.token);
   },
   methods: {
+    filtrar: function(){
+      if ( this.filtro !== '') {
+        this.postsFiltro = this.posts.filter( x => x['title'].includes(this.filtro));      
+      } else {
+        this.postsFiltro = this.posts;
+      }
+    },
     update: function(post){
       sessionStorage.setItem('postUpdate', JSON.stringify(post))
       this.$router.push("/form") 
@@ -82,7 +86,14 @@ export default {
       });
       let posts = listarPosts.data;
       this.posts = posts;
+      this.postsFiltro = posts;
     }
   }
 };
 </script>
+<style>
+  .separacion {
+  margin-bottom: 10px;
+}
+
+</style>
