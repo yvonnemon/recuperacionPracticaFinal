@@ -60,33 +60,38 @@ export class UserController {
         })(req,res)
     }
     @Get('google')
-    private async google(user:any, req: Request, res: Response){
-        console.log("google");
-        
-        passport.authenticate('google', { scope: ['email','profile'] },(err:any,user:any, info:any)=>{
-
-            
-            
-            console.log(res);
-            console.log("holli");
-            
-
-        }
-        
-        )(req,res)
-
-           
+    @Middleware(passport.authenticate('google', {scope: ['email', 'profile']}))
+    private google(user:any, req: Request, res: Response){
+        return res.end();   
     }
+
     @Get('google/callback')
-    private idk(user:any, req: Request, res: Response){
+    @Middleware(passport.authenticate('google', {
+        failureRedirect: '/login/failed'
+    }))
+    private async idk(req: Request, res: Response){
         console.log("google callback");
+        console.log(req.user);
         
         passport.authenticate('google', { failureRedirect: '/login' }),
         function(req:any, res:any) {
             // Successful authentication, redirect home.
             console.log('holli');
+
+            var tokensito = jwt.sign({
+                email: req.user['username'],
+                apellido: req.user['apellido'],
+                nombre: req.user['name']
+            },'Secretin secretado, este Secreto esta Encriptado',{algorithm: 'HS256'});
+            return res.status(OK).json({
+                jwt: tokensito
+            });
             
         }(req,res)
     }
 
+    @Get('google/failed')
+    private async failed(req: Request, res: Response) {
+        res.redirect('/google/login');
+    }
 }

@@ -41,11 +41,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var http_status_codes_1 = require("http-status-codes");
 var core_1 = require("@overnightjs/core");
 require("../config/passport");
 var passport = require('passport');
+var jwt = __importStar(require("jsonwebtoken"));
 var UserController = /** @class */ (function () {
     function UserController() {
     }
@@ -92,24 +100,37 @@ var UserController = /** @class */ (function () {
         })(req, res);
     };
     UserController.prototype.google = function (user, req, res) {
+        return res.end();
+    };
+    UserController.prototype.idk = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                console.log("google");
-                passport.authenticate('google', { scope: ['email', 'profile'] }, function (err, user, info) {
-                    console.log(res);
-                    console.log("holli");
-                })(req, res);
+                console.log("google callback");
+                console.log(req.user);
+                passport.authenticate('google', { failureRedirect: '/login' }),
+                    function (req, res) {
+                        // Successful authentication, redirect home.
+                        console.log('holli');
+                        var tokensito = jwt.sign({
+                            email: req.user['username'],
+                            apellido: req.user['apellido'],
+                            nombre: req.user['name']
+                        }, 'Secretin secretado, este Secreto esta Encriptado', { algorithm: 'HS256' });
+                        return res.status(http_status_codes_1.OK).json({
+                            jwt: tokensito
+                        });
+                    }(req, res);
                 return [2 /*return*/];
             });
         });
     };
-    UserController.prototype.idk = function (user, req, res) {
-        console.log("google callback");
-        passport.authenticate('google', { failureRedirect: '/login' }),
-            function (req, res) {
-                // Successful authentication, redirect home.
-                console.log('holli');
-            }(req, res);
+    UserController.prototype.failed = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                res.redirect('/google/login');
+                return [2 /*return*/];
+            });
+        });
     };
     __decorate([
         core_1.Get('token/:name/:apellido')
@@ -118,11 +139,18 @@ var UserController = /** @class */ (function () {
         core_1.Post('login')
     ], UserController.prototype, "getUsers", null);
     __decorate([
-        core_1.Get('google')
+        core_1.Get('google'),
+        core_1.Middleware(passport.authenticate('google', { scope: ['email', 'profile'] }))
     ], UserController.prototype, "google", null);
     __decorate([
-        core_1.Get('google/callback')
+        core_1.Get('google/callback'),
+        core_1.Middleware(passport.authenticate('google', {
+            failureRedirect: '/login/failed'
+        }))
     ], UserController.prototype, "idk", null);
+    __decorate([
+        core_1.Get('google/failed')
+    ], UserController.prototype, "failed", null);
     UserController = __decorate([
         core_1.Controller('auth')
     ], UserController);

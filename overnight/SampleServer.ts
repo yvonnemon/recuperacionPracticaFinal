@@ -5,7 +5,7 @@ import { UserController } from './controller/UserController';
 //import { SignupController } from './SignupController';
 //import * as cors from 'cors'; 
 import cors = require('cors'); 
-
+const passport = require('passport');
  
 export class SampleServer extends Server {
     
@@ -14,7 +14,7 @@ export class SampleServer extends Server {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({extended: true}));
 
-        const whitelist = ["http://localhost","http://localhost:8080","http://localhost:8085","http://localhost:8086"]
+        const whitelist = ["https://localhost","http://localhost","http://localhost:8080","http://localhost:8085","http://localhost:8086"]
         const options:cors.CorsOptions = {
             origin: whitelist,
             credentials: true,
@@ -23,7 +23,7 @@ export class SampleServer extends Server {
             maxAge: 3600
         }
         this.app.use(cors(options))
-
+        this.app.use(passport.initialize());
 
         this.setupControllers();
     }

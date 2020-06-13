@@ -44,12 +44,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var passportLocal = __importStar(require("passport-local"));
+var passportGoogle = __importStar(require("passport-google-oauth2"));
 require("./database");
 var UserDao_1 = require("../dao/UserDao");
 //import { findAndValidate } from '../dao/UserDao'
 var passport = require('passport');
 var LocalStrategy = passportLocal.Strategy;
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var GoogleStrategy = passportGoogle.Strategy;
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+passport.deserializeUser(function (obj, done) {
+    done(null, obj);
+});
 passport.use(new LocalStrategy({
     usernameField: 'user',
     passwordField: 'pass'
@@ -87,15 +94,16 @@ passport.use(new LocalStrategy({
 passport.use(new GoogleStrategy({
     clientID: "942070895288-9peui0amtjopi13m1t6eq6ib266c020o.apps.googleusercontent.com",
     clientSecret: "mpeulc33ujD5ZW1YLM8536nA",
-    callbackURL: "http://localhost:3000/auth/google/callback"
-}, function (accessToken, refreshToken, profile, cb, done) {
+    callbackURL: "http://localhost:3000/auth/google/callback",
+    passReqToCallback: true
+}, function (request, accessToken, refreshToken, profile, done) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            console.log(profile.email);
+            console.log(profile);
             return [2 /*return*/, done(null, {
-                    username: 'pepe',
-                    name: 'pepe',
-                    apellido: 'popo'
+                    username: profile.display_name,
+                    name: profile.given_name,
+                    apellido: profile.family_name
                 })];
         });
     });

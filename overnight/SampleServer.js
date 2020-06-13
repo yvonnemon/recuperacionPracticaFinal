@@ -27,13 +27,14 @@ var UserController_1 = require("./controller/UserController");
 //import { SignupController } from './SignupController';
 //import * as cors from 'cors'; 
 var cors = require("cors");
+var passport = require('passport');
 var SampleServer = /** @class */ (function (_super) {
     __extends(SampleServer, _super);
     function SampleServer() {
         var _this = _super.call(this, process.env.NODE_ENV === 'development') || this;
         _this.app.use(bodyParser.json());
         _this.app.use(bodyParser.urlencoded({ extended: true }));
-        var whitelist = ["http://localhost", "http://localhost:8080", "http://localhost:8085", "http://localhost:8086"];
+        var whitelist = ["https://localhost", "http://localhost", "http://localhost:8080", "http://localhost:8085", "http://localhost:8086"];
         var options = {
             origin: whitelist,
             credentials: true,
@@ -42,6 +43,7 @@ var SampleServer = /** @class */ (function (_super) {
             maxAge: 3600
         };
         _this.app.use(cors(options));
+        _this.app.use(passport.initialize());
         _this.setupControllers();
         return _this;
     }
