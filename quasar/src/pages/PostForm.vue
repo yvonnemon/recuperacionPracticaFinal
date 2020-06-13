@@ -168,7 +168,6 @@ export default {
       let listaidiomas = await idiomas.data;
 
       this.idiomas = listaidiomas;
-      //console.log(this.idiomas);
     },
     async traducir() {
       this.originalLanguage = this.idiomaOriginal.name;
@@ -275,7 +274,6 @@ navigator.mediaDevices
   });
 
 function errorMsg(msg, error) {
-  // errorElement.innerHTML += "<p>" + msg + "</p>";
   if (typeof error !== "undefined") {
     console.log(error);
   }

@@ -103,7 +103,7 @@ var UserController = /** @class */ (function () {
         console.log("holi");
         return res.end();
     };
-    UserController.prototype.idk = function (req, res) {
+    UserController.prototype.googleResponse = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 console.log("google callback");
@@ -149,7 +149,7 @@ var UserController = /** @class */ (function () {
         core_1.Middleware(passport.authenticate('google', {
             failureRedirect: '/login/failed'
         }))
-    ], UserController.prototype, "idk", null);
+    ], UserController.prototype, "googleResponse", null);
     __decorate([
         core_1.Get('google/failed')
     ], UserController.prototype, "failed", null);

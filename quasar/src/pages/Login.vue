@@ -30,18 +30,14 @@ export default {
       }
 
       if(separar != undefined){
-      let datos = separar[1];
-      console.log(datos);
-      
-      let datos2 = datos.split('&');
-      console.log(datos2);
+        let datos = separar[1];
+        console.log(datos);
+        
+        let datos2 = datos.split('&');
+        console.log(datos2);
 
-      let usergoogle = datos2[1];
-      let tokengoogle = datos2[0]
-      console.log(usergoogle.replace("%40",'@'));
-      
-
-        console.log("undefinedsito");
+        let usergoogle = datos2[1];
+        let tokengoogle = datos2[0]
         this.token = tokengoogle;
         sessionStorage.setItem('token', this.token);
         sessionStorage.setItem('user', usergoogle.replace("%40",'@'));

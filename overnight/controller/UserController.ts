@@ -71,7 +71,7 @@ export class UserController {
     @Middleware(passport.authenticate('google', {
         failureRedirect: '/login/failed'
     }))
-    private async idk(req: Request, res: Response){
+    private async googleResponse(req: Request, res: Response){
         console.log("google callback");
         console.log(req.user);
         
